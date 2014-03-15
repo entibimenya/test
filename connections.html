@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <link href="/mainpage.css" type="text/css" rel="stylesheet"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>MapdIn</title>
+   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+   <style>
+      #map_canvas {
+        width: 500px;
+        height: 400px;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoUVywHc2jEQP6YmTtTxaiBqxPSM9W2a0&sensor=true"
+  type="text/javascript"></script>
+
+
+ <script type="text/javascript">
+function onLinkedInLoad() {
+  IN.Event.on(IN, "auth", function() {onLinkedInLogin();});
+  IN.Event.on(IN, "logout", function() {onLinkedInLogout();});
+}
+
+function onLinkedInLogout() {
+  setConnections({}, {total:0});
+}
+
+function onLinkedInLogin() {
+  // here, we pass the fields as individual string parameters
+  IN.API.Connections("me")
+    .fields("id", "firstName", "lastName", "pictureUrl", "publicProfileUrl")
+    .result(function(result, metadata) {
+      setConnections(result.values, metadata);
+    });
+}
+
+function setConnections(connections) {
+  var connHTML = "<ul>";
+  for (id in connections) {
+    connHTML = connHTML + "<li><a href=\"" + connections[id].publicProfileURL + "\">";
+    
+    /* picture url not always there, must be defensive */
+    if (connections[id].hasOwnProperty('pictureUrl')) {
+      connHTML = connHTML + "<img align=\"baseline\" src=\"" + connections[id].pictureUrl + "\"></a>";
+    }  else {
+      connHTML = connHTML + "<img align=\"baseline\" src=\"http://static02.linkedin.com/scds/common/u/img/icon/icon_no_photo_80x80.png\"></a>";
+    }
+    
+    connHTML = connHTML + "&nbsp;<a href=\"" + connections[id].publicProfileUrl + "\">";
+    connHTML = connHTML + connections[id].firstName + " " + connections[id].lastName + "</a>";
+    connHTML = connHTML + " (memberToken: " + connections[id].id + ")</li>";
+  }
+
+  connHTML = connHTML + "</ul>";
+  document.getElementById("connectionsdata").innerHTML = connHTML;
+}
+</script>                          
+<script>
+      function initialize() {
+        var map_canvas = document.getElementById('map_canvas');
+        var map_options = {
+          center: new google.maps.LatLng(53.3550067,-6.2500853,12),
+          zoom: 8,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        var map = new google.maps.Map(map_canvas, map_options)
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+
+
+  </head>
+ <body>
+
+  <header>
+   <ul class="nav">
+    <a href="#">Home</a>
+    <a href="companies.html">Companies</a>
+    <a href="jobs.html.html">Jobs</a>
+    <a href="#">Connections</a>
+   </ul>
+  </header>
+
+<div id="map_canvas"></div>
+</body>
+
+
+
+</html>
